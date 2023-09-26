@@ -7,9 +7,15 @@ const os = require("os");
 // 创建原生浏览器窗口的模块。
 const {BrowserWindow} = electron;
 const Menu = electron.Menu
-
+const packageInfo = require("../package.json");
 // 是否是开发环境
 const isDev = process.env.IS_DEV == "true" ? true : false;
+const { randomUUID } = require('crypto');
+
+const apptmpdir = os.tmpdir() + "/mbgremover/";
+if (!fs.existsSync(apptmpdir)){
+  fs.mkdirSync(apptmpdir);
+}
 
 function createWindow() {
   Menu.setApplicationMenu(null);
@@ -38,9 +44,32 @@ function createWindow() {
   mainWindow.webContents.send('active', 1);
 }
 
+function getInfo(){
+  process.env.OS_TYPE = os.type();
+  process.env.APP_VERSION = packageInfo.version;
+  let filename = "client";
+  let filepath = apptmpdir + filename;
+  if (fs.existsSync(filepath)) {
+    const clientid = fs.readFileSync(filepath);
+    process.env.CLIENT_ID = clientid;
+  }else{
+    const clientid = randomUUID();
+    fs.writeFile(filepath, clientid, (err) => {
+      if (err) {
+        console.error(err);
+      }else{
+        process.env.CLIENT_ID = clientid;
+      }
+    });
+  }
+// console.log(os.networkInterfaces());  
+}
+
+
 // Electron应用程序入口，应用程序准备好后执行回调函数
 app.whenReady().then(() => {
   read_last_popup();
+  getInfo();
   createWindow();
   // 监听激活事件
   app.on('activate', function () {
@@ -53,7 +82,7 @@ app.whenReady().then(() => {
   function read_last_popup(){
     process.env.SHOW_BUY_COFFEE = "no";
     let filename = "magicbackgroundremover.log";
-    let filepath = os.tmpdir() + "/" + filename;
+    let filepath = apptmpdir + filename;
     if (fs.existsSync(filepath)) {
       const lasttime = fs.readFileSync(filepath);
       let curtimesec = Math.floor(Date.now()/1000);
@@ -69,7 +98,7 @@ app.whenReady().then(() => {
   ipcMain.on('update_time', (event) => {
     process.env.SHOW_BUY_COFFEE = "no";
     let filename = "magicbackgroundremover.log";
-    let filepath = os.tmpdir() + "/" + filename;
+    let filepath = apptmpdir + filename;
     let timesec = Math.floor(Date.now()/1000);
     console.log(filepath);
     fs.writeFile(filepath, ''+timesec, (err) => {

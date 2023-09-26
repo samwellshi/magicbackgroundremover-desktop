@@ -13,7 +13,7 @@
     "app:build": "yarn build:for:electron && yarn electron:builder",
     "dist-win32": "electron-builder --win --ia32",
     "dist-win64": "electron-builder --win --x64",
-    "dist-mac": "electron-builder --mac"    
+    "dist-mac": "electron-builder --mac"
   },
   "build": {
     "appId": "com.magicbackgroundremover",
@@ -21,48 +21,50 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "installerIcon":"./public/icon.ico",
-      "uninstallerIcon":"./public/icon.ico",
-      "installerHeaderIcon":"./public/icon.ico",
-      "createDesktopShortcut":true,
-      "createStartMenuShortcut":true,
-      "shortcutName":"MagicBGRemover"
+      "installerIcon": "./public/icon.ico",
+      "uninstallerIcon": "./public/icon.ico",
+      "installerHeaderIcon": "./public/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "MagicBGRemover"
     },
-    "mac":{
-      "icon":"public/icon.ico",
-      "target":"dmg",
+    "mac": {
+      "icon": "public/icon.ico",
+      "target": "dmg",
       "artifactName": "${productName}_setup_${version}.${ext}"
     },
-    "win":{
-      "icon":"public/icon.ico",
-      "artifactName":"${productName}_setup_${version}.${ext}",
-      "target":[
+    "win": {
+      "icon": "public/icon.ico",
+      "artifactName": "${productName}_setup_${version}.${ext}",
+      "target": [
         {
-          "target":"nsis",
-          "arch":["x64"]
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
-    "linux":{
-      "icon":"public/icon.ico",
+    "linux": {
+      "icon": "public/icon.ico",
       "artifactName": "${productName}_setup_${version}.${ext}"
     },
     "dmg": {
       "contents": [
-          {
-              "x": 410,
-              "y": 150,
-              "type": "link",
-              "path": "/Applications"
-          },
-          {
-              "x": 130,
-              "y": 150,
-              "type": "file"
-          }
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
       ]
-  },
-  "files": [
+    },
+    "files": [
       "dist/**/*",
       "electron/**/*"
     ],
@@ -75,8 +77,8 @@
     }
   },
   "dependencies": {
-    "vue": "^3.3.4",
     "@imgly/background-removal": "^1.0.5",
+    "vue": "^3.3.4",
     "vue-pick-colors": "^1.3.4"
   },
   "devDependencies": {

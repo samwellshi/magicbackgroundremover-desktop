@@ -1,6 +1,5 @@
 
 <script>
-import { ref, watch, onMounted, onUnmounted } from 'vue';
 import removeBackground from '@imgly/background-removal';
 import PickColors from 'vue-pick-colors'
 //console.log(Sketch)
@@ -20,6 +19,7 @@ const res_path = process.env.IS_DEV ? "" : (__dirname + "/../dist/");
 //     });    
 console.log(process.env.SHOW_BUY_COFFEE)
 let showbuycoffee = process.env.SHOW_BUY_COFFEE == "yes"?true:false;
+const API_SERVER = 'https://magicbackgroundremover.com/api/'
 
 export default {
   // name: 'App',
@@ -57,6 +57,7 @@ export default {
   },
   mounted () {
     setInterval(this.do_task, 500);
+    this.check_update();
 		let dropArea = document.getElementById('droparea');
   	    dropArea.addEventListener('drop', this.dropEvent, false);
         dropArea.addEventListener('dragleave', (e) => {
@@ -77,16 +78,30 @@ export default {
     // this.dotask();
 	},  
   methods:{
-    check_update(){
-      const Http = new XMLHttpRequest();
-      const url='https://app.magicbackgroundremover.com/checkupdate';
-      Http.open("POST", url);
-      Http.send();
+    post(url, data, cb){
+      const httpReq = new XMLHttpRequest();
+      httpReq.open("POST", url);
+      httpReq.send(data);
 
-      Http.onreadystatechange = (e) => {
-        // console.log(Http.responseText)
+      httpReq.onreadystatechange = (e) => {
+        if(httpReq.readyState == 4 && httpReq.status == 200){
+          var jsonstr = httpReq.responseText;
+          var jsonobj = JSON.parse(jsonstr);
+          cb(jsonobj);
+        }
       }
 
+    },
+    check_update(){
+      // const url='https://app.magicbackgroundremover.com/checkupdate';
+      console.log('checkupdate');
+      const url = API_SERVER + 'checkupdate'
+      var data = new FormData();
+          data.append('appversion', process.env.OS_TYPE);
+          data.append('ostype', process.env.APP_VERSION);
+      this.post(url, data, function(res){
+          console.log(res.code);
+      });
     },
     buy_me_coffee(){
       shell.openExternal("https://www.buymeacoffee.com/samwellshii");
@@ -95,14 +110,14 @@ export default {
       document.getElementById("select_bg_photo_input").click();
     },
     sendSuccess(){
-      const Http = new XMLHttpRequest();
-      const url='https://app.magicbackgroundremover.com/bgremoved';
-      Http.open("POST", url);
-      Http.send();
-
-      Http.onreadystatechange = (e) => {
-        // console.log(Http.responseText)
-      }
+      const url=API_SERVER + '/bgremoved';
+      var data = new FormData();
+          data.append('clientid', process.env.CLIENT_ID);
+          data.append('from', 'client_app');
+          data.append('ostype', process.env.APP_VERSION);
+      this.post(url, data, function(res){
+          console.log(res);
+      });
     },
     dropEvent(e) {
 	        this.dropActive = false
@@ -497,12 +512,12 @@ export default {
   <div id="droparea" class="">
     <div class="w-full bg-slate-200 m-px fixed z-10">
       <div class="text-center bg-orange-400 p-2 text-xl">
-        If this tool helps you, please <a href="javascript:;" @click="buy_me_coffee()" class="text-emerald-800 underline">buy me a coffee!</a> Thanks!
+        If you like our work, please <a href="javascript:;" @click="buy_me_coffee()" class="text-emerald-800 underline">buy a coffee to support us!</a> Thanks!
       </div>
       <div>
         <button class="m-2 bg-cyan-500 p-2 text-white rounded-sm" @click="toggleSelectFile()">Select Images</button>     
         <button class="m-2 bg-cyan-500 p-2 text-white rounded-sm" @click="toggleSelectDir()">Select Directory</button>
-        <i> Support png and jpg format image</i>
+        <i> (Or Drop Files ) Support png and jpg format image</i>
       </div>
     </div>
     <div class="w-full pt-28">
