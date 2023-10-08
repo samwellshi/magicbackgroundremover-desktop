@@ -94,7 +94,7 @@ export default {
     },
     check_update(){
       // const url='https://app.magicbackgroundremover.com/checkupdate';
-      console.log('checkupdate');
+      // console.log('checkupdate');
       const url = API_SERVER + 'checkupdate'
       var data = new FormData();
           data.append('appversion', process.env.OS_TYPE);
@@ -511,9 +511,9 @@ export default {
 
   <div id="droparea" class="">
     <div class="w-full bg-slate-200 m-px fixed z-10">
-      <div class="text-center bg-orange-400 p-2 text-xl">
+      <!-- <div class="text-center bg-orange-400 p-2 text-xl">
         If you like our work, please <a href="javascript:;" @click="buy_me_coffee()" class="text-emerald-800 underline">buy a coffee to support us!</a> Thanks!
-      </div>
+      </div> -->
       <div>
         <button class="m-2 bg-cyan-500 p-2 text-white rounded-sm" @click="toggleSelectFile()">Select Images</button>     
         <button class="m-2 bg-cyan-500 p-2 text-white rounded-sm" @click="toggleSelectDir()">Select Directory</button>
