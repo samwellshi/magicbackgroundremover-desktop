@@ -17,7 +17,7 @@ const res_path = process.env.IS_DEV ? "" : (__dirname + "/../dist/");
 //       //这里是主进程传过来的消息
 //       console.log("from mainwindow:" + arg);
 //     });    
-console.log(process.env.SHOW_BUY_COFFEE)
+// console.log(process.env.SHOW_BUY_COFFEE)
 let showbuycoffee = process.env.SHOW_BUY_COFFEE == "yes"?true:false;
 const API_SERVER = 'https://magicbackgroundremover.com/api/'
 
@@ -100,7 +100,7 @@ export default {
           data.append('appversion', process.env.OS_TYPE);
           data.append('ostype', process.env.APP_VERSION);
       this.post(url, data, function(res){
-          console.log(res.code);
+          // console.log(res.code);
       });
     },
     buy_me_coffee(){
@@ -116,7 +116,7 @@ export default {
           data.append('from', 'client_app');
           data.append('ostype', process.env.APP_VERSION);
       this.post(url, data, function(res){
-          console.log(res);
+          // console.log(res);
       });
     },
     dropEvent(e) {
@@ -309,17 +309,23 @@ export default {
       }
       var rh = height / imgH;
       var rw = width / imgW;
-      var r = rh > rw ? rw : rh;
+      // var r = rh > rw ? rw : rh;
       // var r = height / imgH;
       // if(r * imgW > width){
       //   r = width / imgW;
       // }
-      height = r * imgH;
-      width = r * imgW;
-      this.canvas_height = height;
-      this.canvas_width = width;
+      if((rh * imgW) > width){
+        this.canvas_height = rw * imgH;
+        this.canvas_width = rw * imgW;
+      }else{
+        this.canvas_height = rh * imgH;
+        this.canvas_width = rh * imgW;
+      }
+      // height = rH * imgH;
+      // width = rW * imgW;
     },
     edit_img(imgdataurl, status){
+      // console.log(status);
         if(status != "done") return;
           this.show_edit_image = false;
           this.background_removed_file = imgdataurl;
@@ -331,7 +337,7 @@ export default {
               imgel.src = imgdataurl;
           imgel.onload = function(){
             var bgimgel = document.createElement("img");
-                bgimgel.src = "/img/transparent.svg";
+                bgimgel.src = res_path + "/img/transparent.svg";
             //  ctx.fillRect(0,0,300,300);
                 owner.calculate_width_height(imgel.width, imgel.height);
                 canvas.width = owner.canvas_width;
@@ -429,7 +435,7 @@ export default {
           }
         }).then(imageBlob =>{
           var finishtime = Date.now() / 1000;
-          console.log(finishtime - starttime);
+          // console.log(finishtime - starttime);
           owner.sendSuccess();
           // console.log(map);
           owner.filelist[file.path]["status"] = "done";

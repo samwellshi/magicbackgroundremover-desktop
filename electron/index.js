@@ -22,7 +22,7 @@ function createWindow() {
   // 创建主窗口
   const mainWindow = new BrowserWindow({
     // 窗口宽度
-    width: 1200,
+    width: 1520,
     // 窗口高度
     height: 1000,
     icon:path.join(__dirname, '../public/icon.ico'),
